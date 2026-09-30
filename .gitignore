@@ -1,0 +1,40 @@
+# Codex-Test: standalone HTML/CSS/JavaScript project.
+
+# Dependencies and generated build / test output
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+*.log
+
+# Local environment, credentials, and tool settings
+.env
+.env.*
+!.env.example
+!.env.sample
+.aws/
+.codex/
+.agents/
+.vscode/
+.idea/
+*.pem
+*.key
+*-recovery-codes.*
+
+# OS files, editor backups, and temporary files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.lnk
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Generated browser-check screenshot (kept on disk)
+/tetris/preview.jpg
