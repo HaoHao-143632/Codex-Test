@@ -5,6 +5,14 @@
   const $ = id => document.getElementById(id);
   const canvas = $('board'), ctx = canvas.getContext('2d');
   const preview = $('next'), nextCtx = preview.getContext('2d');
+  const pieceNames = { I: 'I · 长条', J: 'J · 折角', L: 'L · 折角', O: 'O · 方块', S: 'S · 折线', T: 'T · 三叉', Z: 'Z · 折线' };
+  const stateLabels = { ready: '准备就绪', playing: '游戏进行中', paused: '已暂停', over: '游戏结束' };
+  const overlayContent = {
+    ready: ['READY TO PLAY', '准备好了吗？', '拼满一行，给下一块留出空间。', '开始游戏 →'],
+    paused: ['PAUSED', '休息一下', '按 P 或点击下方按钮继续。', '继续游戏 →'],
+    over: ['GAME OVER', '游戏结束', '记住这次的节奏，再挑战一局吧。', '再玩一次 →']
+  };
+  let renderedState = null;
   let elapsed = 0, lastTime = performance.now();
   const cell = canvas.width / COLS;
 
@@ -41,20 +49,33 @@
     const minY = Math.min(...occupied.map(p => p[1])), maxY = Math.max(...occupied.map(p => p[1]));
     const size = 24, ox = (preview.width - (maxX - minX + 1) * size) / 2, oy = (preview.height - (maxY - minY + 1) * size) / 2;
     occupied.forEach(([x, y]) => block(nextCtx, ox + (x - minX) * size, oy + (y - minY) * size, size, COLORS[game.next]));
+    $('next-name').textContent = pieceNames[game.next];
+    preview.setAttribute('aria-label', `下一方块：${pieceNames[game.next]}`);
     $('score').textContent = game.score.toLocaleString('zh-CN');
     $('level').textContent = String(game.level).padStart(2, '0');
     $('lines').textContent = game.lines;
     $('progress-fill').style.width = `${game.lines % 10 * 10}%`;
+    $('level-progress').setAttribute('aria-valuenow', String(game.lines % 10));
+    $('level-progress').setAttribute('aria-valuetext', `本级已消除 ${game.lines % 10} 行，还需 ${10 - game.lines % 10} 行升级`);
     $('progress-text').textContent = `再消除 ${10 - game.lines % 10} 行升级`;
-    $('status').textContent = { ready: '准备就绪', playing: '游戏进行中', paused: '已暂停', over: '游戏结束' }[game.state];
     $('pause').disabled = !['playing', 'paused'].includes(game.state);
     $('pause').textContent = game.state === 'paused' ? '继续游戏' : '暂停游戏';
-    $('overlay').hidden = game.state === 'playing';
-    $('overlay-label').textContent = { ready: 'READY TO PLAY', playing: '', paused: 'PAUSED', over: 'GAME OVER' }[game.state];
-    if (game.state === 'paused') {
-      $('overlay-title').textContent = '休息一下'; $('overlay-text').textContent = '按 P 或点击下方按钮继续。'; $('overlay-button').textContent = '继续游戏 →';
-    } else if (game.state === 'over') {
-      $('overlay-title').textContent = '游戏结束'; $('overlay-text').textContent = `本次得分 ${game.score}，已消除 ${game.lines} 行。`; $('overlay-button').textContent = '再玩一次 →';
+    document.querySelectorAll('[data-action]').forEach(button => { button.disabled = game.state !== 'playing'; });
+    if (renderedState !== game.state) {
+      $('status').textContent = stateLabels[game.state];
+      document.body.dataset.state = game.state;
+      $('overlay').hidden = game.state === 'playing';
+      $('overlay-summary').hidden = game.state !== 'over';
+      const content = overlayContent[game.state];
+      if (content) {
+        ['overlay-label', 'overlay-title', 'overlay-text', 'overlay-button'].forEach((id, index) => { $(id).textContent = content[index]; });
+      }
+      if (game.state === 'over') {
+        $('end-score').textContent = game.score.toLocaleString('zh-CN');
+        $('end-lines').textContent = game.lines;
+        $('end-level').textContent = String(game.level).padStart(2, '0');
+      }
+      renderedState = game.state;
     }
   }
   function start() { game.start(); elapsed = 0; lastTime = performance.now(); draw(); }

@@ -17,35 +17,41 @@
     </header>
     <section class="game-layout" aria-label="俄罗斯方块游戏">
       <div class="board-panel">
-        <div class="board-top"><span><i></i> <span id="status">准备就绪</span></span><span>10 × 20</span></div>
+        <div class="board-top"><span class="status-badge"><i></i> <span id="status" role="status">准备就绪</span></span><span>10 × 20</span></div>
         <div class="board-wrap">
           <canvas id="board" width="300" height="600" aria-label="游戏棋盘：10列20行"></canvas>
           <div id="overlay" class="overlay">
             <div class="overlay-icon" aria-hidden="true">▦</div>
             <p id="overlay-label" class="eyebrow">READY TO PLAY</p><h2 id="overlay-title">准备好了吗？</h2>
             <p id="overlay-text">拼满一行，给下一块留出空间。</p>
+            <div id="overlay-summary" class="end-summary" hidden aria-label="本局成绩">
+              <div><span>得分</span><strong id="end-score">0</strong></div>
+              <div><span>消行</span><strong id="end-lines">0</strong></div>
+              <div><span>等级</span><strong id="end-level">01</strong></div>
+            </div>
             <button id="overlay-button" class="primary">开始游戏 <span>→</span></button>
           </div>
         </div>
         <div class="board-bottom"><span>↑ 旋转</span><span>空格 一键落下</span></div>
+        <div class="touch-controls" aria-label="屏幕操作按钮"><button data-action="left" aria-label="向左移动">←</button><button data-action="rotate" aria-label="旋转">↻</button><button data-action="right" aria-label="向右移动">→</button><button data-action="down" aria-label="向下移动">↓</button><button data-action="drop" aria-label="直接落底">落底</button></div>
       </div>
       <aside class="sidebar">
         <section class="card score-card" aria-label="游戏统计">
           <p class="eyebrow">当前得分 / SCORE</p><div id="score" class="score">0</div>
-          <div class="stats"><div><span>等级</span><strong id="level">01</strong></div><div><span>已消行</span><strong id="lines">0</strong></div></div>
-          <div class="progress"><div id="progress-fill"></div></div><p id="progress-text" class="muted">再消除 10 行升级</p>
+          <div class="stats"><div><span>消除行数</span><strong id="lines">0</strong></div><div><span>当前等级</span><strong id="level">01</strong></div></div>
+          <div id="level-progress" class="progress" role="progressbar" aria-label="升到下一级的消行进度" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div id="progress-fill"></div></div><p id="progress-text" class="muted">再消除 10 行升级</p>
+          <p class="level-note">每 10 行升一级 · 下落逐级加快</p>
         </section>
-        <section class="card next-card"><div class="card-heading"><p class="eyebrow">下一块 / NEXT</p><span class="tag">预览</span></div><canvas id="next" width="180" height="100" aria-label="下一块预览"></canvas></section>
+        <div class="actions"><button id="pause" disabled>暂停游戏</button><button id="restart">重新开始 ↻</button></div>
+        <section class="card next-card"><div class="card-heading"><p class="eyebrow">下一方块 / NEXT</p><span id="next-name" class="tag">预览</span></div><canvas id="next" width="180" height="100" aria-label="下一方块预览"></canvas></section>
         <section class="card controls-card">
           <p class="eyebrow">操作指南 / CONTROLS</p>
           <dl><div><dt><kbd>←</kbd><kbd>→</kbd></dt><dd>左右移动</dd></div><div><dt><kbd>↑</kbd></dt><dd>旋转方块</dd></div><div><dt><kbd>↓</kbd></dt><dd>加速下落</dd></div><div><dt><kbd class="wide">Space</kbd></dt><dd>直接落底</dd></div><div><dt><kbd>P</kbd></dt><dd>暂停 / 继续</dd></div></dl>
           <p class="scoring-note">消除 1 / 2 / 3 / 4 行<br><span>100 / 300 / 500 / 800 分 × 等级</span></p>
         </section>
-        <div class="actions"><button id="pause" disabled>暂停游戏</button><button id="restart">重新开始 ↻</button></div>
-        <div class="touch-controls" aria-label="触屏操作"><button data-action="left" aria-label="向左移动">←</button><button data-action="rotate" aria-label="旋转">↻</button><button data-action="right" aria-label="向右移动">→</button><button data-action="down" aria-label="向下移动">↓</button><button data-action="drop" aria-label="直接落底">落底</button></div>
       </aside>
     </section>
-    <footer><span>一行一行，找到你的节奏。</span><span>原生 HTML / CSS / JavaScript</span></footer>
+    <footer><span>一行一行，找到你的节奏。</span><span>切换窗口会自动暂停</span></footer>
   </main>
 </body>
 </html>
