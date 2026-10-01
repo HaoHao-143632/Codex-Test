@@ -29,3 +29,5 @@ canvas{user-select:none;-webkit-user-select:none}
   .overlay>p:not(.eyebrow){font-size:12px;margin-bottom:12px;line-height:1.4}
   .overlay .primary{font-size:13px;padding:10px 8px}
 }
+
+.boss-hud{position:absolute;z-index:2;top:12px;left:50%;transform:translateX(-50%);width:min(82%,330px);display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:7px 10px;border:1px solid #7b3d50;border-radius:10px;background:#160d18d9;font-size:10px;letter-spacing:1px;color:#ff9aaa;pointer-events:none}.boss-hud[hidden]{display:none}.boss-track{height:7px;overflow:hidden;border-radius:999px;background:#40202a}.boss-track i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#ff7f91,#ffd36a);transition:width .12s}.boss-hud strong{font-size:10px;color:#ffd7dc;font-variant-numeric:tabular-nums;letter-spacing:0}
