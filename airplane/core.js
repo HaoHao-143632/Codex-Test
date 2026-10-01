@@ -1,17 +1,28 @@
 (function (root) {
   'use strict';
-  const WIDTH = 420, HEIGHT = 640;
+  const WIDTH = 420, HEIGHT = 640, BOSS_SCORE = 500, BOSS_HP = 30;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const hit = (a, b) => Math.abs(a.x - b.x) < a.w / 2 + b.w / 2 && Math.abs(a.y - b.y) < a.h / 2 + b.h / 2;
   function create() {
-    return { player: { x: WIDTH / 2, y: HEIGHT - 75, w: 28, h: 36 }, bullets: [], enemies: [], effects: [], score: 0, lives: 3, level: 1, invincible: 0, fireTime: 0, spawnTime: 0.6, time: 0, over: false };
+    return { player: { x: WIDTH / 2, y: HEIGHT - 75, w: 28, h: 36 }, bullets: [], enemies: [], effects: [], boss: null, bossDefeated: false, score: 0, lives: 3, level: 1, invincible: 0, fireTime: 0, spawnTime: 0.6, time: 0, over: false };
   }
   function moveTo(state, x, y) {
     state.player.x = clamp(x, 22, WIDTH - 22);
     state.player.y = clamp(y, 28, HEIGHT - 28);
   }
-  function burst(state, x, y, color) {
-    state.effects.push({ x, y, color, life: 0.35 });
+  function burst(state, x, y, color) { state.effects.push({ x, y, color, life: 0.35 }); }
+  function spawnBoss(state) {
+    if (!state.boss && !state.bossDefeated && state.score >= BOSS_SCORE) {
+      state.boss = { x: WIDTH / 2, y: 82, w: 100, h: 66, hp: BOSS_HP, maxHp: BOSS_HP, phase: 0 };
+      state.enemies = [];
+    }
+  }
+  function damagePlayer(state) {
+    if (state.invincible > 0) return;
+    state.lives--;
+    state.invincible = 1.8;
+    burst(state, state.player.x, state.player.y, '#8ae9ed');
+    if (state.lives <= 0) state.over = true;
   }
   function update(state, dt, input = {}, random = Math.random) {
     if (state.over) return;
@@ -27,15 +38,37 @@
       state.bullets.push({ x: state.player.x, y: state.player.y - 25, w: 5, h: 16 });
       state.fireTime = 0.16;
     }
-    state.spawnTime -= dt;
-    if (state.spawnTime <= 0) {
-      state.enemies.push({ x: 28 + random() * (WIDTH - 56), y: -28, w: 32, h: 36, speed: 95 + state.level * 17 + random() * 40, phase: random() * Math.PI * 2 });
-      state.spawnTime = Math.max(0.25, 0.85 - state.level * 0.045);
+    spawnBoss(state);
+    if (!state.boss) {
+      state.spawnTime -= dt;
+      if (state.spawnTime <= 0) {
+        state.enemies.push({ x: 28 + random() * (WIDTH - 56), y: -28, w: 32, h: 36, speed: 95 + state.level * 17 + random() * 40, phase: random() * Math.PI * 2 });
+        state.spawnTime = Math.max(0.25, 0.85 - state.level * 0.045);
+      }
     }
     for (const bullet of state.bullets) bullet.y -= 540 * dt;
     for (const enemy of state.enemies) {
       enemy.y += enemy.speed * dt;
       enemy.x = clamp(enemy.x + Math.sin(state.time * 2 + enemy.phase) * 24 * dt, 22, WIDTH - 22);
+    }
+    if (state.boss) {
+      state.boss.phase += dt;
+      state.boss.x = WIDTH / 2 + Math.sin(state.boss.phase * 1.5) * 125;
+      for (const bullet of state.bullets) {
+        if (!bullet.dead && hit(state.boss, bullet)) {
+          bullet.dead = true;
+          state.boss.hp--;
+          burst(state, bullet.x, bullet.y, '#ffd36a');
+          if (state.boss.hp <= 0) {
+            burst(state, state.boss.x, state.boss.y, '#ff8c9a');
+            state.boss = null;
+            state.bossDefeated = true;
+            state.score += 250;
+            break;
+          }
+        }
+      }
+      if (state.boss && hit(state.boss, state.player)) damagePlayer(state);
     }
     for (const enemy of state.enemies) {
       for (const bullet of state.bullets) {
@@ -47,19 +80,17 @@
       }
       if (!enemy.dead && state.invincible === 0 && hit(enemy, state.player)) {
         enemy.dead = true;
-        state.lives--;
-        state.invincible = 1.8;
-        burst(state, state.player.x, state.player.y, '#8ae9ed');
-        if (state.lives <= 0) state.over = true;
+        damagePlayer(state);
       }
     }
+    spawnBoss(state);
     state.level = 1 + Math.floor(state.score / 100);
     state.bullets = state.bullets.filter(bullet => !bullet.dead && bullet.y > -20);
     state.enemies = state.enemies.filter(enemy => !enemy.dead && enemy.y < HEIGHT + 40);
     for (const effect of state.effects) effect.life -= dt;
     state.effects = state.effects.filter(effect => effect.life > 0);
   }
-  const api = { WIDTH, HEIGHT, create, moveTo, update };
+  const api = { WIDTH, HEIGHT, BOSS_SCORE, BOSS_HP, create, moveTo, update };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.PlaneGame = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
