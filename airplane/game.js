@@ -9,6 +9,7 @@
   const stars = Array.from({ length: 65 }, () => ({ x: Math.random() * 420, y: Math.random() * 640, size: Math.random() * 1.5 + 0.5, speed: Math.random() * 30 + 15 }));
   function stats() {
     $('score').textContent = state.score;
+    $('flight-score').textContent = state.score;
     $('lives').textContent = '♥ '.repeat(state.lives).trim() || '—';
     $('level').textContent = String(state.level).padStart(2, '0');
     if (state.score > best) {
@@ -17,18 +18,23 @@
     }
     $('best').textContent = best;
   }
+  function clearPointer() {
+    const id = pointer && pointer.id;
+    pointer = null;
+    if (id !== null && canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
+  }
   function setMode(next) {
     mode = next;
     keys.clear();
-    pointer = null;
+    clearPointer();
+    lastTime = 0;
     $('overlay').hidden = next === 'playing';
-    $('pause').disabled = next === 'ready' || next === 'over';
-    $('pause').textContent = next === 'paused' ? '继续游戏' : '暂停游戏';
+    $('pause').textContent = { ready: '开始游戏', playing: '暂停游戏', paused: '继续游戏', over: '再玩一次' }[next];
     const copy = {
       ready: ['准备起飞', 'READY FOR TAKEOFF', '准备起飞', '驾驶小飞机，躲避敌机。子弹自动发射，你只管飞！', '开始游戏 →'],
       playing: ['飞行中', '', '', '', ''],
       paused: ['已暂停', 'FLIGHT PAUSED', '休息一下', '准备好了，就继续这次飞行。', '继续游戏 →'],
-      over: ['飞行结束', 'MISSION COMPLETE', '飞行结束', `本局得分 ${state.score} · 最高得分 ${best}`, '再玩一次 ↻']
+      over: ['游戏结束', 'GAME OVER', '游戏结束', `本局得分 ${state.score} · 最高得分 ${best}`, '再玩一次 ↻']
     }[next];
     ['status', 'overlay-label', 'overlay-title', 'overlay-text', 'start'].forEach((id, i) => $(id).textContent = copy[i]);
   }
@@ -36,7 +42,7 @@
   function togglePause() { if (mode === 'playing') setMode('paused'); else if (mode === 'paused') setMode('playing'); }
   $('start').addEventListener('click', () => mode === 'paused' ? setMode('playing') : start());
   $('restart').addEventListener('click', start);
-  $('pause').addEventListener('click', togglePause);
+  $('pause').addEventListener('click', () => mode === 'ready' || mode === 'over' ? start() : togglePause());
   const movement = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down' };
   window.addEventListener('keydown', event => {
     if (movement[event.code]) {
@@ -51,14 +57,24 @@
   document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'playing') setMode('paused'); });
   function drag(event) {
     const rect = canvas.getBoundingClientRect();
-    PlaneGame.moveTo(state, (event.clientX - rect.left) * 420 / rect.width, (event.clientY - rect.top) * 640 / rect.height);
+    PlaneGame.moveTo(state,
+      state.player.x + (event.clientX - pointer.x) * PlaneGame.WIDTH / rect.width,
+      state.player.y + (event.clientY - pointer.y) * PlaneGame.HEIGHT / rect.height);
+    pointer.x = event.clientX;
+    pointer.y = event.clientY;
   }
   canvas.addEventListener('pointerdown', event => {
-    if (mode !== 'playing' || pointer !== null) return;
-    event.preventDefault(); pointer = event.pointerId; canvas.setPointerCapture(pointer); drag(event);
+    if (mode !== 'playing' || pointer !== null || !event.isPrimary || event.button !== 0) return;
+    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    canvas.setPointerCapture(pointer.id);
   });
-  canvas.addEventListener('pointermove', event => { if (mode === 'playing' && pointer === event.pointerId) drag(event); });
-  for (const name of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.addEventListener(name, event => { if (pointer === event.pointerId) pointer = null; });
+  canvas.addEventListener('pointermove', event => {
+    if (mode === 'playing' && pointer && pointer.id === event.pointerId) drag(event);
+  });
+  for (const name of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.addEventListener(name, event => {
+    if (pointer && pointer.id === event.pointerId) clearPointer();
+  });
+  window.addEventListener('resize', () => { if (mode === 'playing') setMode('paused'); });
   function plane(x, y, color, enemy) {
     ctx.save(); ctx.translate(x, y); if (enemy) ctx.rotate(Math.PI);
     ctx.shadowColor = color; ctx.shadowBlur = enemy ? 8 : 18;
@@ -86,7 +102,7 @@
     }
   }
   function frame(now) {
-    const dt = Math.min((now - lastTime) / 1000 || 0, 0.05); lastTime = now;
+    const dt = lastTime ? Math.min((now - lastTime) / 1000, 0.05) : 0; lastTime = now;
     if (mode === 'playing') {
       const input = {};
       for (const key of keys) input[movement[key]] = true;
@@ -95,5 +111,5 @@
     }
     draw(); requestAnimationFrame(frame);
   }
-  stats(); requestAnimationFrame(frame);
+  stats(); setMode('ready'); requestAnimationFrame(frame);
 })();
