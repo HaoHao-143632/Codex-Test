@@ -12,6 +12,12 @@
     $('flight-score').textContent = state.score;
     $('lives').textContent = '♥ '.repeat(state.lives).trim() || '—';
     $('level').textContent = String(state.level).padStart(2, '0');
+    const bossHud = $('boss-hud');
+    bossHud.hidden = !state.boss;
+    if (state.boss) {
+      $('boss-hp').textContent = `${state.boss.hp} / ${state.boss.maxHp}`;
+      $('boss-health').style.width = `${state.boss.hp / state.boss.maxHp * 100}%`;
+    }
     if (state.score > best) {
       best = state.score;
       try { localStorage.setItem('airplane-best', String(best)); } catch (_) { /* Keep an in-memory record. */ }
@@ -75,6 +81,15 @@
     if (pointer && pointer.id === event.pointerId) clearPointer();
   });
   window.addEventListener('resize', () => { if (mode === 'playing') setMode('paused'); });
+  function boss() {
+    if (!state.boss) return;
+    const b = state.boss;
+    ctx.save(); ctx.translate(b.x, b.y);
+    ctx.shadowColor = '#ff758b'; ctx.shadowBlur = 24; ctx.fillStyle = '#e75972';
+    ctx.beginPath(); ctx.moveTo(0, 32); ctx.lineTo(-50, -8); ctx.lineTo(-30, -30); ctx.lineTo(0, -18); ctx.lineTo(30, -30); ctx.lineTo(50, -8); ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0; ctx.fillStyle = '#ffd36a'; ctx.fillRect(-12, 0, 24, 8);
+    ctx.restore();
+  }
   function plane(x, y, color, enemy) {
     ctx.save(); ctx.translate(x, y); if (enemy) ctx.rotate(Math.PI);
     ctx.shadowColor = color; ctx.shadowBlur = enemy ? 8 : 18;
@@ -94,6 +109,7 @@
     for (const bullet of state.bullets) ctx.fillRect(bullet.x - 2, bullet.y - 8, 4, 16);
     ctx.shadowBlur = 0;
     for (const enemy of state.enemies) plane(enemy.x, enemy.y, '#fc8f9d', true);
+    boss();
     if (!state.over && (state.invincible === 0 || Math.floor(state.invincible * 12) % 2 === 0)) plane(state.player.x, state.player.y, '#8ae9ed', false);
     for (const effect of state.effects) {
       ctx.globalAlpha = effect.life / 0.35; ctx.strokeStyle = effect.color; ctx.lineWidth = 3;
