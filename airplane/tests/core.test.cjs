@@ -57,3 +57,27 @@ test('autofire and enemy spawning run, offscreen objects are removed, restart re
   assert.equal(fresh.lives, 3);
   assert.equal(fresh.over, false);
 });
+
+
+test('boss appears at 500 points, takes repeated hits and awards a defeat bonus', () => {
+  const state = Game.create();
+  state.score = 500;
+  Game.update(state, 0);
+  assert.ok(state.boss);
+  assert.equal(state.boss.hp, Game.BOSS_HP);
+  assert.equal(state.enemies.length, 0);
+
+  for (let i = 0; i < Game.BOSS_HP - 1; i++) {
+    state.bullets = [{ x: state.boss.x, y: state.boss.y + 5, w: 5, h: 16 }];
+    Game.update(state, 0);
+    assert.ok(state.boss, 'boss should survive until the final hit');
+  }
+  assert.equal(state.boss.hp, 1);
+  state.bullets = [{ x: state.boss.x, y: state.boss.y + 5, w: 5, h: 16 }];
+  Game.update(state, 0);
+  assert.equal(state.boss, null);
+  assert.equal(state.bossDefeated, true);
+  assert.equal(state.score, 750);
+  Game.update(state, 0.05);
+  assert.equal(state.boss, null, 'boss should not respawn after being defeated');
+});
