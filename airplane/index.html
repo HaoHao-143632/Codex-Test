@@ -16,7 +16,7 @@
       <div class="flight-panel">
         <div class="flight-bar"><span id="status" role="status">准备起飞</span><span class="live-score">当前分数 <strong id="flight-score">0</strong></span></div>
         <div class="actions"><button id="pause" aria-controls="game">开始游戏</button><button id="restart" aria-controls="game">重新开始 ↻</button></div>
-        <div class="stage">
+        <div class="stage">\n          <div id="boss-hud" class="boss-hud" hidden><span>BOSS</span><div class="boss-track"><i id="boss-health"></i></div><strong id="boss-hp">30 / 30</strong></div>
           <canvas id="game" width="420" height="640" aria-label="飞机战场；方向键或 WASD 移动，手机按住战场任意位置滑动"></canvas>
           <div id="overlay" class="overlay" role="region" aria-labelledby="overlay-title" aria-describedby="overlay-text">
             <div class="plane-mark" aria-hidden="true">✈</div>
@@ -30,7 +30,7 @@
       </div>
       <aside>
         <section class="card"><p class="eyebrow">当前得分 / SCORE</p><strong class="score" id="score">0</strong><div class="stats"><div><span>剩余生命</span><strong id="lives">♥ ♥ ♥</strong></div><div><span>当前等级</span><strong id="level">01</strong></div><div><span>最高得分</span><strong id="best">0</strong></div></div></section>
-        <section class="card guide"><p class="eyebrow">飞行指南 / CONTROLS</p><p><kbd>↑ ↓ ← →</kbd> 或 <kbd>W A S D</kbd><br>向任意方向移动</p><p><kbd>P</kbd> / <kbd>空格</kbd> 暂停与继续</p><p>手机上按住战场任意位置滑动，飞机跟随滑动方向移动，松手即可停下。</p><div class="tip">击落敌机获得 10 分。<br>每 100 分升级，敌机逐渐加速。<br>受伤后获得短暂无敌保护。</div></section>
+        <section class="card guide"><p class="eyebrow">飞行指南 / CONTROLS</p><p><kbd>↑ ↓ ← →</kbd> 或 <kbd>W A S D</kbd><br>向任意方向移动</p><p><kbd>P</kbd> / <kbd>空格</kbd> 暂停与继续</p><p>手机上按住战场任意位置滑动，飞机跟随滑动方向移动，松手即可停下。</p><div class="tip">击落敌机获得 10 分。<br>每 100 分升级，敌机逐渐加速。<br>受伤后获得短暂无敌保护。<br>500 分后 Boss 来袭，击败可获得 250 分。</div></section>
         <p class="note">离开窗口会自动暂停。<br>最高分保存在当前浏览器。</p>
       </aside>
     </section>
