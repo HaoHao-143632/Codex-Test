@@ -142,3 +142,17 @@ test('score and game-over message update, and replay resets play while retaining
   assert.equal(ui.state.score, 0);
   assert.equal(ui.elements.best.textContent, 10);
 });
+
+
+test('boss HUD appears at the boss threshold and reflects boss damage', () => {
+  const ui = setup();
+  ui.click('start');
+  ui.state.score = 500;
+  ui.frame(100); ui.frame(150);
+  assert.ok(ui.state.boss);
+  assert.equal(ui.elements['boss-hud'].hidden, false);
+  assert.equal(ui.elements['boss-hp'].textContent, '30 / 30');
+  ui.state.bullets = [{ x: ui.state.boss.x, y: ui.state.boss.y + 5, w: 5, h: 16 }];
+  ui.frame(200);
+  assert.equal(ui.elements['boss-hp'].textContent, '29 / 30');
+});
