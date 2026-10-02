@@ -1,0 +1,9 @@
+{
+  "appid": "touristappid",
+  "projectname": "english-checkin",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./",
+  "setting": {
+    "es6": true
+  }
+}

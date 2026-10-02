@@ -1,0 +1,305 @@
+.page {
+  padding: 40rpx 32rpx 80rpx;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32rpx;
+}
+
+.eyebrow {
+  color: #5869c7;
+  font-size: 22rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+.title {
+  margin-top: 12rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: 10rpx;
+  color: #7f89a1;
+  font-size: 25rpx;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 12rpx;
+  border-radius: 28rpx;
+  background: #596cdd;
+  color: #fff;
+}
+
+.stat {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-size: 56rpx;
+  font-weight: 700;
+}
+
+.stat-label {
+  margin-top: 4rpx;
+  font-size: 23rpx;
+  opacity: 0.9;
+}
+
+.stat-divider {
+  width: 1rpx;
+  height: 68rpx;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.tabs {
+  display: flex;
+  margin: 32rpx 0 28rpx;
+  border-bottom: 1rpx solid #dce2f3;
+}
+
+.tab {
+  margin-right: 42rpx;
+  padding: 0 2rpx 18rpx;
+  color: #77849e;
+  font-size: 28rpx;
+}
+
+.tab.active {
+  border-bottom: 5rpx solid #596cdd;
+  color: #3549bb;
+  font-weight: 700;
+}
+
+.unit-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 34rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 22rpx;
+  background: #e8edff;
+}
+
+.unit-picker > view {
+  display: flex;
+  flex-direction: column;
+}
+
+.unit-label {
+  color: #6c79ab;
+  font-size: 22rpx;
+}
+
+.unit-title {
+  margin-top: 7rpx;
+  color: #3245ad;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.unit-name {
+  margin-top: 5rpx;
+  color: #7c87af;
+  font-size: 22rpx;
+}
+
+.unit-switch {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  color: #4559c7;
+  font-size: 24rpx;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.section-count {
+  color: #7b879f;
+  font-size: 23rpx;
+}
+
+.progress-track {
+  height: 12rpx;
+  margin-bottom: 26rpx;
+  overflow: hidden;
+  border-radius: 12rpx;
+  background: #e2e7f5;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 12rpx;
+  background: #596cdd;
+}
+
+.lesson-card {
+  margin-bottom: 22rpx;
+  padding: 30rpx;
+  border-radius: 24rpx;
+  background: #fff;
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 29rpx;
+  font-weight: 700;
+}
+
+.done-tag {
+  color: #208967;
+  font-size: 23rpx;
+}
+
+.word-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12rpx 2rpx;
+  border-bottom: 1rpx solid #eef1f8;
+}
+
+.word-en {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.word-zh {
+  color: #68758e;
+  font-size: 24rpx;
+}
+
+.question {
+  display: block;
+  margin: 28rpx 0 12rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  min-height: 84rpx;
+  margin-top: 12rpx;
+  padding: 16rpx 22rpx;
+  border: 2rpx solid #dce3f9;
+  border-radius: 16rpx;
+  color: #3245ad;
+  font-size: 25rpx;
+}
+
+.reading-text {
+  display: block;
+  color: #3f4d68;
+  font-size: 27rpx;
+  line-height: 1.7;
+}
+
+.speaking-tip {
+  display: block;
+  color: #68758e;
+  font-size: 24rpx;
+}
+
+.speaking-text {
+  display: block;
+  margin: 24rpx 0;
+  color: #3245ad;
+  font-size: 29rpx;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.speaking-button {
+  border-radius: 16rpx;
+  background: #edf0ff;
+  color: #3245ad;
+  font-size: 26rpx;
+}
+
+.speaking-button[disabled] {
+  color: #747f9f;
+}
+
+.checkin-button {
+  margin-top: 30rpx;
+  border-radius: 18rpx;
+  background: #596cdd;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.checkin-button[disabled] {
+  background: #bbc4e6;
+  color: #fff;
+}
+
+.hint {
+  display: block;
+  margin-top: 18rpx;
+  color: #78849a;
+  font-size: 22rpx;
+  text-align: center;
+}
+
+.empty {
+  padding: 80rpx 36rpx;
+  color: #748199;
+  font-size: 25rpx;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+  padding: 28rpx;
+  border-radius: 20rpx;
+  background: #fff;
+}
+
+.history-date-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-date {
+  font-size: 27rpx;
+  font-weight: 700;
+}
+
+.history-year {
+  margin-top: 6rpx;
+  color: #78849a;
+  font-size: 22rpx;
+}
+
+.history-badge {
+  color: #208967;
+  font-size: 23rpx;
+}

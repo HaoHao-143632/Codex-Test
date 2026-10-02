@@ -1,0 +1,9 @@
+{
+  "pages": ["pages/index/index"],
+  "window": {
+    "navigationBarTitleText": "英语天天打卡",
+    "navigationBarBackgroundColor": "#f6f8ff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f8ff"
+  }
+}

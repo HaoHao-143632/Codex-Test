@@ -1,0 +1,100 @@
+<view class="page">
+  <view class="header">
+    <text class="eyebrow">PEP GRADE 6 · VOLUME 1</text>
+    <text class="title">英语天天打卡</text>
+    <text class="subtitle">{{todayLabel}} · 每天进步一点点</text>
+  </view>
+
+  <view class="stats">
+    <view class="stat">
+      <text class="stat-number">{{streak}}</text>
+      <text class="stat-label">连续打卡</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat">
+      <text class="stat-number">{{totalDays}}</text>
+      <text class="stat-label">累计打卡</text>
+    </view>
+  </view>
+
+  <view class="tabs">
+    <view class="tab {{view === 'today' ? 'active' : ''}}" data-view="today" bindtap="switchView">今日练习</view>
+    <view class="tab {{view === 'history' ? 'active' : ''}}" data-view="history" bindtap="switchView">打卡记录</view>
+  </view>
+
+  <view wx:if="{{view === 'today'}}">
+    <picker range="{{unitTitles}}" value="{{unitIndex}}" disabled="{{checkedIn}}" bindchange="changeUnit">
+      <view class="unit-picker">
+        <view>
+          <text class="unit-label">正在学习</text>
+          <text class="unit-title">{{currentUnitTitle}}</text>
+          <text class="unit-name">{{currentUnitName}}</text>
+        </view>
+        <text class="unit-switch">切换 ▾</text>
+      </view>
+    </picker>
+
+    <view class="section-heading">
+      <text class="section-title">今日学习任务</text>
+      <text class="section-count">{{doneCount}} / 3 已完成</text>
+    </view>
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{progressPercent}}%;"></view>
+    </view>
+
+    <view class="lesson-card">
+      <view class="card-heading">
+        <text class="card-title">01 · 认识单词</text>
+        <text wx:if="{{done.words}}" class="done-tag">已完成 ✓</text>
+      </view>
+      <view wx:for="{{lesson.words}}" wx:for-item="word" wx:key="en" class="word-row">
+        <text class="word-en">{{word.en}}</text>
+        <text class="word-zh">{{word.zh}}</text>
+      </view>
+      <view wx:if="{{!done.words}}">
+        <text class="question">{{lesson.wordQuiz.question}}</text>
+        <view wx:for="{{lesson.wordQuiz.options}}" wx:for-item="option" wx:for-index="optionIndex" wx:key="*this" class="choice" data-index="{{optionIndex}}" bindtap="answerWords">{{option}}</view>
+      </view>
+    </view>
+
+    <view class="lesson-card">
+      <view class="card-heading">
+        <text class="card-title">02 · 阅读理解</text>
+        <text wx:if="{{done.reading}}" class="done-tag">已完成 ✓</text>
+      </view>
+      <text class="reading-text">{{lesson.reading.text}}</text>
+      <view wx:if="{{!done.reading}}">
+        <text class="question">{{lesson.reading.question}}</text>
+        <view wx:for="{{lesson.reading.options}}" wx:for-item="option" wx:for-index="optionIndex" wx:key="*this" class="choice" data-index="{{optionIndex}}" bindtap="answerReading">{{option}}</view>
+      </view>
+    </view>
+
+    <view class="lesson-card">
+      <view class="card-heading">
+        <text class="card-title">03 · 开口朗读</text>
+        <text wx:if="{{done.speaking}}" class="done-tag">已完成 ✓</text>
+      </view>
+      <text class="speaking-tip">请把下面的句子大声读三遍：</text>
+      <text class="speaking-text">{{lesson.speaking}}</text>
+      <button class="speaking-button" disabled="{{done.speaking || checkedIn}}" bindtap="finishSpeaking">{{done.speaking ? '已完成朗读 ✓' : '我已经读完了'}}</button>
+    </view>
+
+    <button class="checkin-button" disabled="{{!canCheckIn}}" bindtap="checkIn">{{checkedIn ? '今天已打卡 ✓' : '完成今日打卡'}}</button>
+    <text class="hint">单词和阅读答对、完成朗读后即可打卡</text>
+  </view>
+
+  <view wx:else>
+    <view class="section-heading">
+      <text class="section-title">打卡记录</text>
+      <text class="section-count">共 {{totalDays}} 天</text>
+    </view>
+    <view wx:if="{{history.length === 0}}" class="empty">还没有记录，完成今天的练习后开始第一次打卡吧。</view>
+    <view wx:for="{{history}}" wx:key="date" class="history-row">
+      <view class="history-date-group">
+        <text class="history-date">{{item.displayDate}}</text>
+        <text class="history-year">{{item.year}} · {{item.unitName}}</text>
+      </view>
+      <text class="history-badge">已完成 ✓</text>
+    </view>
+  </view>
+</view>
